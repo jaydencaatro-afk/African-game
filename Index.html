@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Multiverse Hub | Portal Interactivo 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Plus+Jakarta+Sans:wght@300;400;600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        roblox: {
+                            base: '#111315',
+                            dark: '#191B1D',
+                            card: '#232527',
+                            border: '#393B3D',
+                            blue: '#00A2FF',
+                            red: '#E12318',
+                            green: '#00E676',
+                            gold: '#FFC107',
+                            purple: '#9D4EDD'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Rajdhani"', 'sans-serif'],
+                        display: ['"Bungee"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Glowing & Glassmorphism Styles */
+        body {
+            background-color: #111315;
+            color: #E2E8F0;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(35, 37, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-glow {
+            background: rgba(25, 27, 29, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 162, 255, 0.25);
+            box-shadow: 0 0 25px rgba(0, 162, 255, 0.15);
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+        }
+
+        .glow-red {
+            box-shadow: 0 0 20px rgba(225, 35, 24, 0.4);
+        }
+
+        .text-glow-blue {
+            text-shadow: 0 0 12px rgba(0, 162, 255, 0.7);
+        }
+
+        .text-glow-red {
+            text-shadow: 0 0 12px rgba(225, 35, 24, 0.7);
+        }
+
+        /* 3D Roblox Block Floating Keyframes */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-18px) rotate(6deg); }
+        }
+
+        @keyframes float-reverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(18px) rotate(-6deg); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.08); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-float-slow {
+            animation: float-reverse 9s ease-in-out infinite;
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        /* Roblox Tilted Logo Icon */
+        .roblox-square {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #00A2FF, #E12318);
+            transform: rotate(-15deg);
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 162, 255, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .roblox-square-inner {
+            width: 10px;
+            height: 10px;
+            background-color: #111315;
+            border-radius: 2px;
+            transform: rotate(15deg);
+        }
+
+        .roblox-square:hover {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        /* 3D Card Tilt Effects */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111315;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #393B3D;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00A2FF;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen font-sans selection:bg-roblox-blue selection:text-white">
+
+    <!-- Dynamic Ambient Background Canvas -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+    <!-- Header Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-roblox-border/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="roblox-square">
+                    <div class="roblox-square-inner"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-display text-2xl tracking-wider text-white group-hover:text-roblox-blue transition-colors">
+                        ROBLOX<span class="text-roblox-blue">HUB</span>
+                    </span>
+                    <span class="text-[10px] font-bold text-gray-400 tracking-widest uppercase -mt-1">Multiverso Fan Portal</span>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-md relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="globalSearch" placeholder="Buscar juegos, códigos o avatares..." 
+                       class="w-full bg-roblox-base/80 border border-roblox-border rounded-full py-2 pl-11 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-roblox-blue focus:ring-1 focus:ring-roblox-blue transition-all">
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-roblox-card border border-roblox-border text-gray-400 px-2 py-0.5 rounded font-mono">CTRL + K</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-6 font-semibold text-sm">
+                <a href="#hero" class="text-white hover:text-roblox-blue transition-colors flex items-center gap-2"><i class="fa-solid fa-house text-roblox-blue"></i> Inicio</a>
+                <a href="#games" class="text-gray-300 hover:text-roblox-blue transition-colors flex items-center gap-2"><i class="fa-solid fa-gamepad text-roblox-purple"></i> Juegos</a>
+                <a href="#avatar-studio" class="text-gray-300 hover:text-roblox-blue transition-colors flex items-center gap-2"><i class="fa-solid fa-user-gear text-roblox-green"></i> Avatar Studio</a>
+                <a href="#codes" class="text-gray-300 hover:text-roblox-blue transition-colors flex items-center gap-2"><i class="fa-solid fa-key text-roblox-gold"></i> Códigos</a>
+                <a href="#gallery" class="text-gray-300 hover:text-roblox-blue transition-colors flex items-center gap-2"><i class="fa-solid fa-image text-roblox-red"></i> Galería</a>
+                <a href="#robux-calc" class="text-gray-300 hover:text-roblox-blue transition-colors flex items-center gap-2"><i class="fa-solid fa-coins text-yellow-400"></i> Robux Calc</a>
+            </nav>
+
+            <!-- Interactive Robux Counter & Actions -->
+            <div class="flex items-center gap-3">
+                <button id="robuxCounterBtn" onclick="clickRobuxCounter()" class="glass-panel px-3.5 py-1.5 rounded-full border border-yellow-500/30 flex items-center gap-2 text-yellow-400 hover:border-yellow-400 hover:bg-yellow-500/10 transition-all cursor-pointer group">
+                    <div class="w-5 h-5 rounded-full bg-yellow-500/20 flex items-center justify-center border border-yellow-400 text-[10px] font-bold">R$</div>
+                    <span id="robuxCountDisplay" class="font-bold text-sm">12,450</span>
+                    <i class="fa-solid fa-plus text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuToggle" class="lg:hidden text-2xl text-gray-300 hover:text-white focus:outline-none p-2">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu Overlay -->
+        <div id="mobileMenu" class="hidden lg:hidden glass-panel border-t border-roblox-border/50 px-6 py-4 space-y-3">
+            <div class="mb-3">
+                <input type="text" id="mobileSearch" placeholder="Buscar en el portal..." class="w-full bg-roblox-base border border-roblox-border rounded-lg py-2 px-4 text-sm text-white">
+            </div>
+            <a href="#hero" class="block text-white font-semibold py-2"><i class="fa-solid fa-house mr-2 text-roblox-blue"></i> Inicio</a>
+            <a href="#games" class="block text-gray-300 font-semibold py-2"><i class="fa-solid fa-gamepad mr-2 text-roblox-purple"></i> Juegos Top</a>
+            <a href="#avatar-studio" class="block text-gray-300 font-semibold py-2"><i class="fa-solid fa-user-gear mr-2 text-roblox-green"></i> Avatar Studio</a>
+            <a href="#codes" class="block text-gray-300 font-semibold py-2"><i class="fa-solid fa-key mr-2 text-roblox-gold"></i> Promo Codes</a>
+            <a href="#gallery" class="block text-gray-300 font-semibold py-2"><i class="fa-solid fa-image mr-2 text-roblox-red"></i> Galería Wallpaper</a>
+            <a href="#robux-calc" class="block text-gray-300 font-semibold py-2"><i class="fa-solid fa-calculator mr-2 text-yellow-400"></i> Robux Tools</a>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section id="hero" class="relative pt-12 pb-24 overflow-hidden">
+        <!-- Floating 3D Roblox Blocks (CSS Animated Art) -->
+        <div class="absolute top-10 left-[8%] w-20 h-20 bg-gradient-to-br from-roblox-blue to-blue-700 rounded-2xl opacity-60 blur-xs animate-float border border-white/20 shadow-2xl pointer-events-none hidden md:block"></div>
+        <div class="absolute bottom-16 right-[10%] w-28 h-28 bg-gradient-to-br from-roblox-red to-red-700 rounded-3xl opacity-50 blur-xs animate-float-slow border border-white/20 shadow-2xl pointer-events-none hidden md:block"></div>
+        <div class="absolute top-1/3 right-[25%] w-14 h-14 bg-gradient-to-br from-roblox-gold to-orange-500 rounded-xl opacity-40 animate-float border border-white/20 pointer-events-none hidden lg:block"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            
+            <!-- Live Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border border-roblox-blue/40 text-roblox-blue text-xs font-bold tracking-wide uppercase mb-6 animate-pulse">
+                <span class="w-2 h-2 rounded-full bg-roblox-green animate-ping"></span>
+                <span>¡Actualizado para Roblox Multiverso 2026!</span>
+            </div>
+
+            <!-- Hero Main Headline -->
+            <h1 class="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white uppercase leading-none mb-6">
+                EXPLORA EL <span class="bg-gradient-to-r from-roblox-blue via-purple-400 to-roblox-red bg-clip-text text-transparent text-glow-blue">MULTIVERSO</span><br>
+                <span class="text-outline text-white">DE ROBLOX</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-gray-300 text-base sm:text-lg font-normal mb-8 leading-relaxed">
+                Tu centro de mando definitivo: descubre los juegos más populares, personaliza tu avatar en tiempo real, reclama códigos promocionales activos y calcula tus metas de Robux.
+            </p>
+
+            <!-- Hero CTA Buttons -->
+            <div class="flex flex-wrap justify-center items-center gap-4 mb-12">
+                <a href="#games" class="px-8 py-4 rounded-xl bg-gradient-to-r from-roblox-blue to-blue-600 text-white font-bold text-base shadow-lg shadow-roblox-blue/30 hover:shadow-roblox-blue/60 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group">
+                    <i class="fa-solid fa-play text-xl group-hover:translate-x-1 transition-transform"></i>
+                    <span>Explorar Juegos</span>
+                </a>
+                <a href="#avatar-studio" class="px-8 py-4 rounded-xl glass-panel border border-roblox-green/50 text-white font-bold text-base hover:bg-roblox-green/20 hover:border-roblox-green hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-shirt text-roblox-green"></i>
+                    <span>Avatar Studio 3D</span>
+                </a>
+                <a href="#codes" class="px-8 py-4 rounded-xl glass-panel border border-roblox-gold/50 text-white font-bold text-base hover:bg-roblox-gold/20 hover:border-roblox-gold hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-gift text-roblox-gold"></i>
+                    <span>Códigos Gratis</span>
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="glass-panel p-4 rounded-2xl border-t-2 border-roblox-blue">
+                    <div class="font-heading text-3xl font-extrabold text-white">+55M</div>
+                    <div class="text-xs text-gray-400 uppercase font-semibold">Jugadores Conectados</div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border-t-2 border-roblox-purple">
+                    <div class="font-heading text-3xl font-extrabold text-white">100%</div>
+                    <div class="text-xs text-gray-400 uppercase font-semibold">Códigos Verificados</div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border-t-2 border-roblox-green">
+                    <div class="font-heading text-3xl font-extrabold text-white">4K UHD</div>
+                    <div class="text-xs text-gray-400 uppercase font-semibold">Wallpapers Fan Art</div>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border-t-2 border-roblox-red">
+                    <div class="font-heading text-3xl font-extrabold text-white">Realtime</div>
+                    <div class="text-xs text-gray-400 uppercase font-semibold">Avatar Studio Engine</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="py-16 relative z-10 border-t border-roblox-border/30 bg-roblox-dark/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div>
+                    <div class="text-roblox-blue font-bold text-xs uppercase tracking-widest mb-1"><i class="fa-solid fa-fire text-roblox-red mr-1"></i> Experiencias Destacadas</div>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-white uppercase">Juegos Top del Multiverso</h2>
+                </div>
+
+                <!-- Filter Category Tabs -->
+                <div class="flex flex-wrap gap-2" id="gameCategoryFilters">
+                    <button data-cat="all" class="cat-btn active px-4 py-1.5 rounded-lg text-xs font-bold bg-roblox-blue text-white transition-all">Todos</button>
+                    <button data-cat="RPG" class="cat-btn px-4 py-1.5 rounded-lg text-xs font-bold glass-panel text-gray-300 hover:text-white transition-all">RPG & Anime</button>
+                    <button data-cat="Roleplay" class="cat-btn px-4 py-1.5 rounded-lg text-xs font-bold glass-panel text-gray-300 hover:text-white transition-all">Roleplay</button>
+                    <button data-cat="Terror" class="cat-btn px-4 py-1.5 rounded-lg text-xs font-bold glass-panel text-gray-300 hover:text-white transition-all">Terror & Escape</button>
+                    <button data-cat="Simulador" class="cat-btn px-4 py-1.5 rounded-lg text-xs font-bold glass-panel text-gray-300 hover:text-white transition-all">Simuladores</button>
+                </div>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="gamesGrid">
+                <!-- Dynamically populated via JS for full interactive experience -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Avatar Customizer Studio Section -->
+    <section id="avatar-studio" class="py-20 relative z-10 border-t border-roblox-border/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-roblox-green/20 border border-roblox-green/40 text-roblox-green text-xs font-bold uppercase mb-3">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Mini App Interactiva
+                </div>
+                <h2 class="font-heading text-4xl sm:text-5xl font-black text-white uppercase tracking-tight">Avatar Studio 3D</h2>
+                <p class="text-gray-400 text-sm mt-2">Personaliza un personaje de bloques de Roblox en tiempo real. Modifica sombreros, camisas, expresiones, accesorios y aura visual.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Control Tabs & Selector (7 cols) -->
+                <div class="lg:col-span-7 glass-panel p-6 rounded-2xl border border-roblox-border shadow-2xl">
+                    
+                    <!-- Category Selector Header -->
+                    <div class="flex border-b border-roblox-border pb-4 mb-6 gap-2 overflow-x-auto" id="avatarCategoryTabs">
+                        <button data-tab="hats" class="avatar-tab active px-4 py-2 rounded-xl text-xs font-bold bg-roblox-blue text-white flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-hat-wizard"></i> Sombreros
+                        </button>
+                        <button data-tab="shirts" class="avatar-tab px-4 py-2 rounded-xl text-xs font-bold glass-panel text-gray-300 hover:text-white flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-shirt"></i> Camisas
+                        </button>
+                        <button data-tab="faces" class="avatar-tab px-4 py-2 rounded-xl text-xs font-bold glass-panel text-gray-300 hover:text-white flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-face-smile"></i> Caras
+                        </button>
+                        <button data-tab="accessories" class="avatar-tab px-4 py-2 rounded-xl text-xs font-bold glass-panel text-gray-300 hover:text-white flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-shield-halved"></i> Accesorios
+                        </button>
+                        <button data-tab="colors" class="avatar-tab px-4 py-2 rounded-xl text-xs font-bold glass-panel text-gray-300 hover:text-white flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-palette"></i> Piel y Fondo
+                        </button>
+                    </div>
+
+                    <!-- Items Grid Container -->
+                    <div id="avatarItemsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 min-h-[300px]">
+                        <!-- Dynamic items loaded here -->
+                    </div>
+
+                </div>
+
+                <!-- Right Stage Preview (5 cols) -->
+                <div class="lg:col-span-5 glass-panel-glow p-6 rounded-2xl flex flex-col items-center justify-between min-h-[500px] relative overflow-hidden">
+                    
+                    <!-- Stage Title & Controls -->
+                    <div class="w-full flex justify-between items-center mb-4 z-10">
+                        <span class="text-xs font-bold uppercase tracking-widest text-roblox-blue flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-roblox-blue animate-ping"></span> Vista Previa Live
+                        </span>
+                        <div class="flex gap-2">
+                            <button onclick="triggerAvatarAnim('spin')" class="p-2 rounded-lg bg-roblox-card border border-roblox-border text-xs text-gray-300 hover:text-white hover:border-roblox-blue" title="Girar 360°">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                            <button onclick="triggerAvatarAnim('dance')" class="p-2 rounded-lg bg-roblox-card border border-roblox-border text-xs text-gray-300 hover:text-white hover:border-roblox-green" title="Bailar">
+                                <i class="fa-solid fa-child-reaching"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic SVG Character Preview Box -->
+                    <div id="avatarStage" class="w-full h-80 relative flex items-center justify-center transition-all duration-500 rounded-xl bg-gradient-to-b from-gray-900/80 to-black/90 border border-white/10 shadow-inner overflow-hidden">
+                        
+                        <!-- Aura Effect Layer -->
+                        <div id="avatarAura" class="absolute inset-0 opacity-40 transition-all duration-500"></div>
+
+                        <!-- SVG Character Visual Engine -->
+                        <svg id="robloxAvatarSVG" class="w-64 h-64 transition-transform duration-300" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Shadow -->
+                            <ellipse cx="100" cy="225" rx="55" ry="10" fill="#000000" opacity="0.6"/>
+
+                            <!-- Left Arm -->
+                            <rect id="partArmLeft" x="35" y="80" width="22" height="75" rx="5" fill="#E0AC69" stroke="#111" stroke-width="2.5"/>
+                            
+                            <!-- Right Arm -->
+                            <rect id="partArmRight" x="143" y="80" width="22" height="75" rx="5" fill="#E0AC69" stroke="#111" stroke-width="2.5"/>
+
+                            <!-- Left Leg -->
+                            <rect id="partLegLeft" x="66" y="150" width="30" height="70" rx="4" fill="#1E293B" stroke="#111" stroke-width="2.5"/>
+
+                            <!-- Right Leg -->
+                            <rect id="partLegRight" x="104" y="150" width="30" height="70" rx="4" fill="#1E293B" stroke="#111" stroke-width="2.5"/>
+
+                            <!-- Torso / Shirt -->
+                            <rect id="partTorso" x="62" y="75" width="76" height="80" rx="6" fill="#00A2FF" stroke="#111" stroke-width="3"/>
+                            
+                            <!-- Shirt Graphic Design Container -->
+                            <g id="shirtDesignContainer">
+                                <path d="M 85 85 L 100 110 L 115 85" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+                                <circle cx="100" cy="120" r="12" fill="#E12318"/>
+                            </g>
+
+                            <!-- Head -->
+                            <rect id="partHead" x="68" y="18" width="64" height="58" rx="10" fill="#E0AC69" stroke="#111" stroke-width="3"/>
+
+                            <!-- Face Expression (Grouped) -->
+                            <g id="faceGroup">
+                                <!-- Classic Eyes -->
+                                <circle cx="85" cy="42" r="4.5" fill="#111"/>
+                                <circle cx="115" cy="42" r="4.5" fill="#111"/>
+                                <!-- Classic Smile -->
+                                <path d="M 82 54 Q 100 66 118 54" stroke="#111" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                            </g>
+
+                            <!-- Hat Visual Container -->
+                            <g id="hatGroup">
+                                <!-- Default Cap -->
+                                <path d="M 64 24 Q 100 -5 136 24 Z" fill="#E12318"/>
+                                <rect x="55" y="22" width="40" height="6" rx="2" fill="#E12318" transform="rotate(-10 55 22)"/>
+                            </g>
+
+                            <!-- Accessory Group (Wings, Swords, Back items) -->
+                            <g id="accGroup">
+                                <!-- SVG dynamics loaded here -->
+                            </g>
+                        </svg>
+
+                    </div>
+
+                    <!-- Customizer Action Toolbar -->
+                    <div class="w-full mt-4 flex items-center justify-between gap-3 z-10">
+                        <button onclick="randomizeAvatar()" class="flex-1 py-2.5 px-4 rounded-xl glass-panel border border-roblox-blue/40 text-xs font-bold text-white hover:bg-roblox-blue/20 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-dice text-roblox-blue"></i> Aleatorio
+                        </button>
+                        <button onclick="saveAvatarConfig()" class="flex-1 py-2.5 px-4 rounded-xl bg-roblox-green text-black font-extrabold text-xs hover:bg-green-400 transition-all flex items-center justify-center gap-2 shadow-lg shadow-roblox-green/20">
+                            <i class="fa-solid fa-download"></i> Guardar Look
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Promo Codes Tracker Section -->
+    <section id="codes" class="py-16 relative z-10 border-t border-roblox-border/30 bg-roblox-dark/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex flex-col md:flex-row items-center justify-between mb-10 gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-roblox-gold font-bold text-xs uppercase tracking-widest mb-1">
+                        <i class="fa-solid fa-certificate"></i> Recompensas Gratuitas Verificadas
+                    </div>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-black text-white uppercase">Roblox Promo Codes 2026</h2>
+                </div>
+
+                <div class="text-right">
+                    <span class="text-xs text-gray-400">¿Cómo canjear? Ve a <a href="https://www.roblox.com/redeem" target="_blank" class="text-roblox-blue hover:underline font-bold">roblox.com/redeem</a></span>
+                </div>
+            </div>
+
+            <!-- Codes Cards Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="codesGrid">
+                <!-- Dynamically generated codes cards -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Wallpaper Gallery Section -->
+    <section id="gallery" class="py-20 relative z-10 border-t border-roblox-border/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-white uppercase">Galería Multiverso & Wallpapers 4K</h2>
+                <p class="text-gray-400 text-sm mt-2">Capturas de pantalla épicas, fan art conceptual e imágenes HD de tus juegos favoritos.</p>
+                
+                <!-- Gallery Filter Tags -->
+                <div class="flex flex-wrap justify-center gap-2 mt-6" id="galleryFilters">
+                    <button data-gcat="all" class="gcat-btn active px-4 py-1.5 rounded-full text-xs font-bold bg-roblox-blue text-white">Todos</button>
+                    <button data-gcat="4k" class="gcat-btn px-4 py-1.5 rounded-full text-xs font-bold glass-panel text-gray-300 hover:text-white">Fondos 4K</button>
+                    <button data-gcat="gameplay" class="gcat-btn px-4 py-1.5 rounded-full text-xs font-bold glass-panel text-gray-300 hover:text-white">Gameplay</button>
+                    <button data-gcat="fanart" class="gcat-btn px-4 py-1.5 rounded-full text-xs font-bold glass-panel text-gray-300 hover:text-white">Fan Art</button>
+                </div>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="galleryGrid">
+                <!-- Dynamic gallery cards loaded here -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Robux Tools & Quiz Dual Section -->
+    <section id="robux-calc" class="py-20 relative z-10 border-t border-roblox-border/30 bg-roblox-dark/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Robux Calculator Widget -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-yellow-500/30 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-400 flex items-center justify-center text-yellow-400 text-xl font-bold">
+                            R$
+                        </div>
+                        <div>
+                            <h3 class="font-heading text-2xl font-bold text-white">Calculadora de Robux & DevEx</h3>
+                            <p class="text-xs text-gray-400">Calcula valores de divisas y metas de compra</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Cantidad de Robux (R$)</label>
+                            <input type="number" id="robuxInput" value="1000" min="1" 
+                                   class="w-full bg-roblox-base border border-roblox-border rounded-xl py-3 px-4 text-white font-mono font-bold text-lg focus:outline-none focus:border-yellow-400 transition-colors">
+                        </div>
+
+                        <!-- Calculation Results Grid -->
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="bg-roblox-base/70 p-3.5 rounded-xl border border-roblox-border">
+                                <span class="text-[10px] text-gray-400 font-bold uppercase block">Precio Aprox. (USD)</span>
+                                <span id="usdResult" class="text-lg font-bold text-roblox-green font-mono">$12.50 USD</span>
+                            </div>
+                            <div class="bg-roblox-base/70 p-3.5 rounded-xl border border-roblox-border">
+                                <span class="text-[10px] text-gray-400 font-bold uppercase block">DevEx Cobro Creador</span>
+                                <span id="devexResult" class="text-lg font-bold text-yellow-400 font-mono">$3.50 USD</span>
+                            </div>
+                        </div>
+
+                        <!-- Premium Allowance Selector -->
+                        <div class="pt-2">
+                            <span class="text-xs font-bold text-gray-300 block mb-2">Planes Mensuales Premium Roblox</span>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setCalcRobux(450)" class="py-2 rounded-lg text-xs font-bold bg-roblox-card border border-roblox-border text-gray-300 hover:border-yellow-400 hover:text-white transition-all">450 R$/mes</button>
+                                <button onclick="setCalcRobux(1000)" class="py-2 rounded-lg text-xs font-bold bg-roblox-card border border-roblox-border text-gray-300 hover:border-yellow-400 hover:text-white transition-all">1000 R$/mes</button>
+                                <button onclick="setCalcRobux(2200)" class="py-2 rounded-lg text-xs font-bold bg-roblox-card border border-roblox-border text-gray-300 hover:border-yellow-400 hover:text-white transition-all">2200 R$/mes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roblox Trivia Quiz Widget -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-roblox-purple/40 relative overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-roblox-purple/20 border border-roblox-purple flex items-center justify-center text-roblox-purple text-lg font-bold">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-heading text-2xl font-bold text-white">Trivia Experto Roblox</h3>
+                                    <p class="text-xs text-gray-400">Demuestra tus conocimientos del multiverso</p>
+                                </div>
+                            </div>
+                            <span id="quizScoreBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-roblox-purple/20 text-roblox-purple border border-roblox-purple/40">Score: 0/5</span>
+                        </div>
+
+                        <!-- Quiz Question Container -->
+                        <div id="quizContainer" class="mt-4">
+                            <!-- Loaded via JS -->
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-roblox-border/40 mt-4 flex justify-between items-center text-xs text-gray-400">
+                        <span>¿Completarás el desafío sin fallar?</span>
+                        <button onclick="resetQuiz()" class="text-roblox-blue hover:underline font-bold"><i class="fa-solid fa-rotate-left mr-1"></i> Reiniciar Trivia</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-roblox-base border-t border-roblox-border py-12 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                
+                <div class="space-y-4 md:col-span-1">
+                    <div class="flex items-center gap-3">
+                        <div class="roblox-square">
+                            <div class="roblox-square-inner"></div>
+                        </div>
+                        <span class="font-display text-xl text-white">ROBLOX<span class="text-roblox-blue">HUB</span></span>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Tu destino número uno para estar al día con la comunidad global de Roblox. Juegos, avatares, guías y códigos en un solo lugar.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Navegación</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="#hero" class="hover:text-roblox-blue transition-colors">Inicio Multiverso</a></li>
+                        <li><a href="#games" class="hover:text-roblox-blue transition-colors">Juegos Populares</a></li>
+                        <li><a href="#avatar-studio" class="hover:text-roblox-blue transition-colors">Creador de Avatares</a></li>
+                        <li><a href="#codes" class="hover:text-roblox-blue transition-colors">Promo Codes 2026</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Comunidad</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="#" class="hover:text-roblox-blue transition-colors"><i class="fa-brands fa-discord mr-2"></i> Discord Oficial</a></li>
+                        <li><a href="#" class="hover:text-roblox-blue transition-colors"><i class="fa-brands fa-youtube mr-2"></i> Canal de YouTube</a></li>
+                        <li><a href="#" class="hover:text-roblox-blue transition-colors"><i class="fa-brands fa-twitter mr-2"></i> Twitter / X</a></li>
+                        <li><a href="#" class="hover:text-roblox-blue transition-colors"><i class="fa-brands fa-tiktok mr-2"></i> TikTok Roblox</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Aviso Legal</h4>
+                    <p class="text-[11px] text-gray-500 leading-relaxed">
+                        Este es un sitio web no oficial creado por fans para la comunidad. Roblox y todas sus marcas registradas son propiedad intelectual exclusiva de Roblox Corporation.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="border-t border-roblox-border/50 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+                <p>© 2026 Roblox Multiverse Fan Portal. Todos los derechos reservados.</p>
+                <a href="#hero" class="p-2 rounded-lg glass-panel hover:text-white transition-colors"><i class="fa-solid fa-arrow-up mr-1"></i> Volver arriba</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Game Detail Modal Window -->
+    <div id="gameModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel-glow w-full max-w-3xl rounded-2xl overflow-hidden border border-roblox-blue/50 transform scale-95 transition-transform duration-300" id="gameModalContent">
+            <!-- Loaded dynamically in JS -->
+        </div>
+    </div>
+
+    <!-- Lightbox Modal for Gallery -->
+    <div id="galleryModal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <button onclick="closeGalleryModal()" class="absolute top-6 right-6 text-2xl text-white hover:text-roblox-blue p-2">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="max-w-4xl w-full text-center">
+            <img id="galleryModalImg" src="" alt="Zoom" class="max-h-[80vh] mx-auto rounded-xl shadow-2xl border border-white/10">
+            <h4 id="galleryModalTitle" class="font-heading text-2xl text-white font-bold mt-4"></h4>
+            <p id="galleryModalDesc" class="text-sm text-gray-400 mt-1"></p>
+        </div>
+    </div>
+
+    <!-- Toast Notification Popup System -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 glass-panel border border-roblox-green px-5 py-3.5 rounded-xl flex items-center gap-3 shadow-2xl">
+        <div class="w-8 h-8 rounded-full bg-roblox-green/20 text-roblox-green flex items-center justify-center text-sm font-bold">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <div id="toastTitle" class="text-xs font-bold text-white">¡Éxito!</div>
+            <div id="toastMessage" class="text-xs text-gray-300">Código copiado al portapapeles.</div>
+        </div>
+    </div>
+
+    <script>
+        // Roblox Games Database
+        const GAMES_DATA = [
+            {
+                id: 'blox-fruits',
+                title: 'Blox Fruits',
+                category: 'RPG',
+                players: '845,210',
+                rating: 4.9,
+                badge: 'Más Popular',
+                badgeColor: 'bg-roblox-red',
+                image: 'https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?w=600&auto=format&fit=crop&q=80',
+                lore: 'Conviértete en un maestro espadachín o en un poderoso usuario de Fruta del Diablo mientras entrenas para ser el jugador más fuerte de los siete mares.',
+                tips: ['Mata jefes para subir de nivel rápido.', 'Guarda tu dinero para comprar la fruta Luz o Buda en el Sea 1.'],
+                activeCodes: ['KITT_RESET', 'SUBCAPTAINMAUI', 'BLUXI']
+            },
+            {
+                id: 'adopt-me',
+                title: 'Adopt Me!',
+                category: 'Roleplay',
+                players: '412,890',
+                rating: 4.8,
+                badge: 'Tendencia',
+                badgeColor: 'bg-roblox-purple',
+                image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80',
+                lore: 'Adopta mascotas adorables, construye la casa de tus sueños y explora la mágica Isla de Adopción con tus amigos.',
+                tips: ['Haz las tareas de tus mascotas durante la Noche de Neón para ganar el doble de Bucks.', 'Ahorra para los huevos legendarios de evento.'],
+                activeCodes: ['SUMMER2026', 'PETLOVER']
+            },
+            {
+                id: 'brookhaven',
+                title: 'Brookhaven RP',
+                category: 'Roleplay',
+                players: '620,150',
+                rating: 4.7,
+                badge: 'Top Roleplay',
+                badgeColor: 'bg-roblox-blue',
+                image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80',
+                lore: 'Un lugar para compartir y hacer roleplay con personas de todo el mundo. Posee casas increíbles, conduce vehículos deportivos y explora la ciudad.',
+                tips: ['Usa la tarjeta de clave secreta para entrar a la bóveda del banco.', 'Descubre los pasadizos secretos dentro de la estación de policía.'],
+                activeCodes: ['BROOKHAVEN2026']
+            },
+            {
+                id: 'doors',
+                title: 'DOORS',
+                category: 'Terror',
+                players: '198,400',
+                rating: 4.9,
+                badge: 'Imperdible',
+                badgeColor: 'bg-roblox-gold',
+                image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80',
+                lore: 'Un juego de terror donde debes atravesar 100 puertas en un hotel embrujado repleto de entidades tenebrosas que acechan en las sombras.',
+                tips: ['Escucha el susurro de Screech y mira hacia él rápidamente.', 'Escóndete en los armarios cuando las luces parpadeen por Rush.'],
+                activeCodes: ['SCREECH', '250MVISITS']
+            },
+            {
+                id: 'arsenal',
+                title: 'Arsenal FPS',
+                category: 'Acción',
+                players: '95,300',
+                rating: 4.8,
+                badge: 'Shooter #1',
+                badgeColor: 'bg-roblox-red',
+                image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80',
+                lore: 'Ábrete paso a través de una enorme variedad de armas bizarras y cómicas en este acelerado juego de disparos en primera persona.',
+                tips: ['Apunta siempre a la cabeza para eliminaciones de un solo impacto.', 'Usa las armas con retroceso para hacer saltos impulsados.'],
+                activeCodes: ['PET', 'JOHN', 'ANNA']
+            },
+            {
+                id: 'pet-sim-99',
+                title: 'Pet Simulator 99',
+                category: 'Simulador',
+                players: '315,600',
+                rating: 4.7,
+                badge: 'Evento Vivo',
+                badgeColor: 'bg-roblox-green',
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
+                lore: '¡Eclosiona huevos, colecciona cientos de mascotas Titanic y explora mundos gigantescos repletos de monedas y diamantes!',
+                tips: ['Reencarna en cuanto puedas para desbloquear multiplicadores.', 'Usa pociones de suerte antes de abrir huevos raros.'],
+                activeCodes: ['RELEASE99', 'HUGEPET']
+            }
+        ];
+
+        // Promo Codes Database
+        const CODES_DATA = [
+            { code: 'SPIDERCOLA', reward: 'Mascota Accesorio Spider Cola', status: 'Activo', icon: 'fa-spider' },
+            { code: 'TWEETROBLOX', reward: 'Mascota Accesorio The Bird Says', status: 'Activo', icon: 'fa-twitter' },
+            { code: 'DIY', reward: 'Vara de Hechicero (Island of Move)', status: 'Activo', icon: 'fa-wand-magic-sparkles' },
+            { code: 'GETMOVING', reward: 'Lentes de Velocidad (Island of Move)', status: 'Activo', icon: 'fa-glasses' },
+            { code: 'STRIKEAPOSE', reward: 'Sombrero de Construcción', status: 'Activo', icon: 'fa-hat-cowboy' },
+            { code: 'BLOXRIG2026', reward: 'Aura Neón Multiverso (Limitado)', status: 'Nuevo', icon: 'fa-bolt' }
+        ];
+
+        // Wallpapers Gallery Data
+        const GALLERY_DATA = [
+            { cat: '4k', title: 'Batalla Épica Blox Fruits', img: 'https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?w=800&auto=format&fit=crop&q=80', desc: 'Fondo de pantalla 4K oficial estilo anime.' },
+            { cat: 'gameplay', title: 'Escena de Terror DOORS Hotel', img: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop&q=80', desc: 'Pasillos oscuros con iluminación volumétrica.' },
+            { cat: 'fanart', title: 'Avatar Dominus Neón', img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80', desc: 'Fan art digital renderizado en 3D.' },
+            { cat: '4k', title: 'Atardecer en Brookhaven RP', img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80', desc: 'Vista panorámica de la ciudad al atardecer.' }
+        ];
+
+        // Avatar Items Engine Database
+        const AVATAR_DATABASE = {
+            hats: [
+                { id: 'cap', name: 'Gorra Roblox', svg: '<path d="M 64 24 Q 100 -5 136 24 Z" fill="#E12318"/><rect x="55" y="22" width="40" height="6" rx="2" fill="#E12318" transform="rotate(-10 55 22)"/>' },
+                { id: 'dominus', name: 'Dominus Neón', svg: '<path d="M 50 10 Q 100 -20 150 10 L 140 45 L 60 45 Z" fill="#9D4EDD" stroke="#00A2FF" stroke-width="2"/><circle cx="80" cy="25" r="5" fill="#00E676"/><circle cx="120" cy="25" r="5" fill="#00E676"/>' },
+                { id: 'valkyrie', name: 'Casco Valkyrie', svg: '<path d="M 55 20 Q 100 -10 145 20 L 135 35 L 65 35 Z" fill="#FFC107"/><path d="M 40 5 L 60 20 L 45 35 Z" fill="#FFFFFF"/><path d="M 160 5 L 140 20 L 155 35 Z" fill="#FFFFFF"/>' },
+                { id: 'fedora', name: 'Fedora Elegante', svg: '<ellipse cx="100" cy="20" rx="45" ry="8" fill="#111"/><path d="M 70 20 Q 100 0 130 20 L 125 5 L 75 5 Z" fill="#222"/><rect x="70" y="16" width="60" height="4" fill="#00A2FF"/>' }
+            ],
+            shirts: [
+                { id: 'blue', name: 'Cyber Neón', color: '#00A2FF', design: '<path d="M 85 85 L 100 110 L 115 85" stroke="#FFFFFF" stroke-width="4"/><circle cx="100" cy="120" r="12" fill="#E12318"/>' },
+                { id: 'red', name: 'Guerrero Redline', color: '#E12318', design: '<rect x="75" y="90" width="50" height="10" fill="#FFC107"/><path d="M 100 100 L 100 140" stroke="#FFF" stroke-width="4"/>' },
+                { id: 'tux', name: 'Saco de Esmoquin', color: '#1E293B', design: '<path d="M 85 75 L 100 115 L 115 75 Z" fill="#FFF"/><polygon points="98,85 102,85 100,90" fill="#E12318"/>' },
+                { id: 'gold', name: 'Armadura Dorada', color: '#FFC107', design: '<circle cx="100" cy="110" r="20" fill="#111" stroke="#FFF" stroke-width="3"/>' }
+            ],
+            faces: [
+                { id: 'smile', name: 'Sonrisa Clásica', svg: '<circle cx="85" cy="42" r="4.5" fill="#111"/><circle cx="115" cy="42" r="4.5" fill="#111"/><path d="M 82 54 Q 100 66 118 54" stroke="#111" stroke-width="3.5" fill="none" stroke-linecap="round"/>' },
+                { id: 'chill', name: 'Chill Face', svg: '<path d="M 78 40 Q 88 36 92 42" stroke="#111" stroke-width="3" fill="none"/><path d="M 108 42 Q 112 36 122 40" stroke="#111" stroke-width="3" fill="none"/><path d="M 88 56 Q 100 52 112 56" stroke="#111" stroke-width="3" fill="none"/>' },
+                { id: 'beast', name: 'Modo Épico', svg: '<polygon points="78,35 90,44 78,44" fill="#E12318"/><polygon points="122,35 110,44 122,44" fill="#E12318"/><path d="M 82 58 L 118 54" stroke="#E12318" stroke-width="4"/>' }
+            ],
+            accessories: [
+                { id: 'none', name: 'Sin Accesorio', svg: '' },
+                { id: 'wings', name: 'Alas Cyber Neón', svg: '<path d="M 30 70 Q -10 30 50 100 Z" fill="#00A2FF" opacity="0.8"/><path d="M 170 70 Q 210 30 150 100 Z" fill="#00A2FF" opacity="0.8"/>' },
+                { id: 'swords', name: 'Espadas Cruzadas', svg: '<line x1="30" y1="50" x2="170" y2="160" stroke="#FFC107" stroke-width="6"/><line x1="170" y1="50" x2="30" y2="160" stroke="#FFC107" stroke-width="6"/>' }
+            ],
+            colors: [
+                { id: 'skin-yellow', name: 'Amarillo Clásico', head: '#E0AC69', legs: '#1E293B', aura: 'none' },
+                { id: 'skin-cyber', name: 'Cian Neón', head: '#00A2FF', legs: '#005588', aura: 'radial-gradient(circle, rgba(0,162,255,0.4) 0%, rgba(0,0,0,0) 70%)' },
+                { id: 'skin-purple', name: 'Sombra Púrpura', head: '#9D4EDD', legs: '#3C096C', aura: 'radial-gradient(circle, rgba(157,78,221,0.4) 0%, rgba(0,0,0,0) 70%)' }
+            ]
+        };
+
+        // Quiz Questions Data
+        const QUIZ_QUESTIONS = [
+            { q: '¿En qué año se lanzó oficialmente Roblox para PC?', options: ['2004', '2006', '2010', '2012'], correct: 1 },
+            { q: '¿Cuál es la moneda virtual oficial dentro del juego?', options: ['Tix', 'BloxCoins', 'Robux', 'R-Bucks'], correct: 2 },
+            { q: '¿Cómo se llamaba el motor precursor de Roblox antes de su cambio de nombre?', options: ['DynaBlocks', 'BlockWorld', 'CubeCraft', 'PhysicsSim'], correct: 0 },
+            { q: '¿Qué fruta en Blox Fruits es famosa por facilitar el farmeo en el Sea 2?', options: ['Fruta Dragón', 'Fruta Buda', 'Fruta Fuego', 'Fruta Hielo'], correct: 1 },
+            { q: '¿Qué botón se usa para hacer salto rápido en la versión de PC?', options: ['Barra Espaciadora', 'Shift Izquierdo', 'Control', 'Enter'], correct: 0 }
+        ];
+
+        // State Engine variables
+        let robuxBalance = 12450;
+        let currentAvatar = { hat: 'cap', shirt: 'blue', face: 'smile', acc: 'none', color: 'skin-yellow' };
+        let quizIndex = 0;
+        let quizScore = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticleCanvas();
+            renderGamesGrid('all');
+            renderCodesGrid();
+            renderGalleryGrid('all');
+            renderAvatarItems('hats');
+            renderQuizQuestion();
+            init3DTiltEffect();
+            setupSearchListeners();
+
+            // Robux Input listener
+            document.getElementById('robuxInput').addEventListener('input', (e) => {
+                calculateRobux(e.target.value);
+            });
+            calculateRobux(1000);
+        });
+
+        function initParticleCanvas() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = Array.from({ length: 45 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 4 + 2,
+                color: Math.random() > 0.5 ? '#00A2FF' : '#E12318',
+                speedX: (Math.random() - 0.5) * 0.8,
+                speedY: (Math.random() - 0.5) * 0.8,
+                rotation: Math.random() * Math.PI * 2,
+                rotSpeed: (Math.random() - 0.5) * 0.02
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.rotation += p.rotSpeed;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = 0.4;
+                    // Draw square blocks floating like Roblox bricks
+                    ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2);
+                    ctx.restore();
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function renderGamesGrid(categoryFilter) {
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = '';
+
+            const filtered = categoryFilter === 'all' 
+                ? GAMES_DATA 
+                : GAMES_DATA.filter(g => g.category === categoryFilter);
+
+            filtered.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'tilt-card glass-panel rounded-2xl overflow-hidden border border-roblox-border hover:border-roblox-blue transition-all cursor-pointer group flex flex-col justify-between';
+                card.onclick = () => openGameModal(game.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${game.image}" alt="${game.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-roblox-base via-transparent to-transparent"></div>
+                            <span class="absolute top-3 left-3 ${game.badgeColor} text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md shadow-lg">
+                                ${game.badge}
+                            </span>
+                            <span class="absolute bottom-3 left-3 glass-panel px-2.5 py-1 rounded-full text-xs text-roblox-green font-bold flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-roblox-green animate-ping"></span>
+                                ${game.players} jugando
+                            </span>
+                        </div>
+
+                        <div class="p-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-roblox-blue uppercase tracking-wider">${game.category}</span>
+                                <span class="text-xs font-bold text-yellow-400 flex items-center gap-1">
+                                    <i class="fa-solid fa-star"></i> ${game.rating}
+                                </span>
+                            </div>
+                            <h3 class="font-heading text-xl font-bold text-white group-hover:text-roblox-blue transition-colors">${game.title}</h3>
+                            <p class="text-xs text-gray-400 mt-2 line-clamp-2">${game.lore}</p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0">
+                        <button class="w-full py-2.5 rounded-xl bg-roblox-card border border-roblox-border text-xs font-bold text-white group-hover:bg-roblox-blue group-hover:border-roblox-blue transition-all flex items-center justify-center gap-2">
+                            <span>Ver Detalles y Trucos</span>
+                            <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Category Filter Button Events
+        document.querySelectorAll('#gameCategoryFilters button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#gameCategoryFilters button').forEach(b => {
+                    b.classList.remove('bg-roblox-blue', 'text-white');
+                    b.classList.add('glass-panel', 'text-gray-300');
+                });
+                e.target.classList.remove('glass-panel', 'text-gray-300');
+                e.target.classList.add('bg-roblox-blue', 'text-white');
+                renderGamesGrid(e.target.getAttribute('data-cat'));
+            });
+        });
+
+        function init3DTiltEffect() {
+            document.addEventListener('mousemove', (e) => {
+                const cards = document.querySelectorAll('.tilt-card');
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = (y - centerY) / 12;
+                        const rotateY = (centerX - x) / 12;
+
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    } else {
+                        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                    }
+                });
+            });
+        }
+
+        function openGameModal(gameId) {
+            const game = GAMES_DATA.find(g => g.id === gameId);
+            if (!game) return;
+
+            const modal = document.getElementById('gameModal');
+            const content = document.getElementById('gameModalContent');
+
+            content.innerHTML = `
+                <div class="relative h-64 overflow-hidden">
+                    <img src="${game.image}" alt="${game.title}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-roblox-dark via-roblox-dark/40 to-transparent"></div>
+                    <button onclick="closeGameModal()" class="absolute top-4 right-4 text-white bg-black/60 hover:bg-roblox-red rounded-full p-2 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                    <div class="absolute bottom-4 left-6">
+                        <span class="text-xs font-bold text-roblox-blue uppercase">${game.category}</span>
+                        <h2 class="font-heading text-3xl font-black text-white uppercase">${game.title}</h2>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-gray-400 mb-1">Historia y Lore</h4>
+                        <p class="text-sm text-gray-300 leading-relaxed">${game.lore}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-roblox-gold mb-2"><i class="fa-solid fa-lightbulb mr-1"></i> Consejos Pro de Jugabilidad</h4>
+                        <ul class="space-y-1.5 text-xs text-gray-300">
+                            ${game.tips.map(tip => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-roblox-green mt-0.5"></i> ${tip}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-roblox-blue mb-2"><i class="fa-solid fa-key mr-1"></i> Códigos Promocionales del Juego</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${game.activeCodes.map(code => `
+                                <button onclick="copyCodeToClipboard('${code}')" class="px-3 py-1.5 rounded-lg bg-roblox-base border border-roblox-blue/40 text-xs font-mono text-roblox-blue hover:bg-roblox-blue hover:text-white transition-all flex items-center gap-2">
+                                    <span>${code}</span>
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-4 border-t border-roblox-border">
+                        <button onclick="closeGameModal()" class="px-5 py-2.5 rounded-xl glass-panel text-xs font-bold text-gray-300 hover:text-white">Cerrar</button>
+                        <a href="https://www.roblox.com" target="_blank" class="px-6 py-2.5 rounded-xl bg-roblox-green text-black font-extrabold text-xs hover:bg-green-400 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Jugar en Roblox
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-95');
+        }
+
+        function closeGameModal() {
+            const modal = document.getElementById('gameModal');
+            const content = document.getElementById('gameModalContent');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.add('scale-95');
+        }
+
+        function renderAvatarItems(tabKey) {
+            const grid = document.getElementById('avatarItemsGrid');
+            grid.innerHTML = '';
+
+            const items = AVATAR_DATABASE[tabKey] || [];
+
+            items.forEach(item => {
+                const isSelected = currentAvatar[tabKey === 'hats' ? 'hat' : tabKey === 'shirts' ? 'shirt' : tabKey === 'faces' ? 'face' : tabKey === 'accessories' ? 'acc' : 'color'] === item.id;
+
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border ${isSelected ? 'border-roblox-blue bg-roblox-blue/20' : 'border-roblox-border bg-roblox-base/60'} hover:border-roblox-blue transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-2 group`;
+                
+                card.onclick = () => {
+                    if (tabKey === 'hats') currentAvatar.hat = item.id;
+                    if (tabKey === 'shirts') currentAvatar.shirt = item.id;
+                    if (tabKey === 'faces') currentAvatar.face = item.id;
+                    if (tabKey === 'accessories') currentAvatar.acc = item.id;
+                    if (tabKey === 'colors') currentAvatar.color = item.id;
+
+                    renderAvatarItems(tabKey);
+                    updateAvatarSVG();
+                };
+
+                card.innerHTML = `
+                    <div class="w-12 h-12 rounded-lg bg-roblox-card border border-white/10 flex items-center justify-center text-roblox-blue group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shirt-shirt text-lg"></i>
+                    </div>
+                    <span class="text-xs font-bold text-white">${item.name}</span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Avatar Tab switcher
+        document.querySelectorAll('#avatarCategoryTabs button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#avatarCategoryTabs button').forEach(b => {
+                    b.classList.remove('bg-roblox-blue', 'text-white');
+                    b.classList.add('glass-panel', 'text-gray-300');
+                });
+                const target = e.currentTarget;
+                target.classList.remove('glass-panel', 'text-gray-300');
+                target.classList.add('bg-roblox-blue', 'text-white');
+                renderAvatarItems(target.getAttribute('data-tab'));
+            });
+        });
+
+        // Update SVG Elements on live stage
+        function updateAvatarSVG() {
+            // Update Hat
+            const hatData = AVATAR_DATABASE.hats.find(h => h.id === currentAvatar.hat);
+            document.getElementById('hatGroup').innerHTML = hatData ? hatData.svg : '';
+
+            // Update Shirt Color & Design
+            const shirtData = AVATAR_DATABASE.shirts.find(s => s.id === currentAvatar.shirt);
+            if (shirtData) {
+                document.getElementById('partTorso').setAttribute('fill', shirtData.color);
+                document.getElementById('shirtDesignContainer').innerHTML = shirtData.design;
+            }
+
+            // Update Face Expression
+            const faceData = AVATAR_DATABASE.faces.find(f => f.id === currentAvatar.face);
+            if (faceData) {
+                document.getElementById('faceGroup').innerHTML = faceData.svg;
+            }
+
+            // Update Accessories
+            const accData = AVATAR_DATABASE.accessories.find(a => a.id === currentAvatar.acc);
+            if (accData) {
+                document.getElementById('accGroup').innerHTML = accData.svg;
+            }
+
+            // Update Skin & Stage Background
+            const colorData = AVATAR_DATABASE.colors.find(c => c.id === currentAvatar.color);
+            if (colorData) {
+                document.getElementById('partHead').setAttribute('fill', colorData.head);
+                document.getElementById('partArmLeft').setAttribute('fill', colorData.head);
+                document.getElementById('partArmRight').setAttribute('fill', colorData.head);
+                document.getElementById('partLegLeft').setAttribute('fill', colorData.legs);
+                document.getElementById('partLegRight').setAttribute('fill', colorData.legs);
+
+                const auraEl = document.getElementById('avatarAura');
+                if (colorData.aura !== 'none') {
+                    auraEl.style.background = colorData.aura;
+                    auraEl.style.opacity = '0.6';
+                } else {
+                    auraEl.style.background = 'transparent';
+                }
+            }
+        }
+
+        function triggerAvatarAnim(type) {
+            const svg = document.getElementById('robloxAvatarSVG');
+            if (type === 'spin') {
+                svg.style.transform = 'rotateY(360deg)';
+                setTimeout(() => svg.style.transform = 'none', 600);
+            } else if (type === 'dance') {
+                svg.style.transform = 'translateY(-15px) scale(1.05)';
+                setTimeout(() => svg.style.transform = 'translateY(0) scale(1)', 300);
+            }
+        }
+
+        function randomizeAvatar() {
+            currentAvatar.hat = AVATAR_DATABASE.hats[Math.floor(Math.random() * AVATAR_DATABASE.hats.length)].id;
+            currentAvatar.shirt = AVATAR_DATABASE.shirts[Math.floor(Math.random() * AVATAR_DATABASE.shirts.length)].id;
+            currentAvatar.face = AVATAR_DATABASE.faces[Math.floor(Math.random() * AVATAR_DATABASE.faces.length)].id;
+            currentAvatar.acc = AVATAR_DATABASE.accessories[Math.floor(Math.random() * AVATAR_DATABASE.accessories.length)].id;
+            currentAvatar.color = AVATAR_DATABASE.colors[Math.floor(Math.random() * AVATAR_DATABASE.colors.length)].id;
+
+            updateAvatarSVG();
+            showToast('¡Avatar Aleatorio!', 'Se ha generado una nueva combinación de Roblox.');
+        }
+
+        function saveAvatarConfig() {
+            showToast('¡Look Guardado!', 'La configuración de tu avatar se guardó en el multiverso.');
+        }
+
+        function renderCodesGrid() {
+            const grid = document.getElementById('codesGrid');
+            grid.innerHTML = '';
+
+            CODES_DATA.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel p-5 rounded-2xl border border-roblox-border hover:border-roblox-gold transition-all flex items-center justify-between gap-4';
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-roblox-gold/10 border border-roblox-gold/30 flex items-center justify-center text-roblox-gold text-xl">
+                            <i class="fa-solid ${item.icon}"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-extrabold text-white text-base">${item.code}</span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${item.status === 'Nuevo' ? 'bg-roblox-red text-white' : 'bg-roblox-green/20 text-roblox-green'}">${item.status}</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-0.5">${item.reward}</p>
+                        </div>
+                    </div>
+
+                    <button onclick="copyCodeToClipboard('${item.code}')" class="px-3.5 py-2 rounded-xl bg-roblox-card border border-roblox-border text-xs font-bold text-gray-200 hover:bg-roblox-gold hover:text-black hover:border-roblox-gold transition-all flex items-center gap-1.5 shrink-0">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>Copiar</span>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderGalleryGrid(cat) {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            const filtered = cat === 'all' ? GALLERY_DATA : GALLERY_DATA.filter(g => g.cat === cat);
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel rounded-2xl overflow-hidden border border-roblox-border group cursor-pointer relative';
+                card.onclick = () => openGalleryModal(item.img, item.title, item.desc);
+
+                card.innerHTML = `
+                    <div class="h-52 overflow-hidden relative">
+                        <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass-plus text-3xl text-white"></i>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-heading text-lg font-bold text-white group-hover:text-roblox-blue transition-colors">${item.title}</h4>
+                        <p class="text-xs text-gray-400 mt-1 line-clamp-1">${item.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openGalleryModal(img, title, desc) {
+            const modal = document.getElementById('galleryModal');
+            document.getElementById('galleryModalImg').src = img;
+            document.getElementById('galleryModalTitle').textContent = title;
+            document.getElementById('galleryModalDesc').textContent = desc;
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function calculateRobux(amount) {
+            const val = parseFloat(amount) || 0;
+            const usd = (val * 0.0125).toFixed(2);
+            const devex = (val * 0.0035).toFixed(2);
+
+            document.getElementById('usdResult').textContent = `$${usd} USD`;
+            document.getElementById('devexResult').textContent = `$${devex} USD`;
+        }
+
+        function setCalcRobux(val) {
+            document.getElementById('robuxInput').value = val;
+            calculateRobux(val);
+        }
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quizContainer');
+            const q = QUIZ_QUESTIONS[quizIndex];
+
+            if (!q) {
+                container.innerHTML = `
+                    <div class="text-center py-6">
+                        <i class="fa-solid fa-trophy text-5xl text-yellow-400 mb-3 animate-bounce"></i>
+                        <h4 class="font-heading text-2xl font-bold text-white">¡Trivia Completada!</h4>
+                        <p class="text-sm text-gray-300 mt-1">Obtuviste <span class="text-roblox-green font-bold">${quizScore} de ${QUIZ_QUESTIONS.length}</span> respuestas correctas.</p>
+                        <button onclick="resetQuiz()" class="mt-4 px-6 py-2.5 rounded-xl bg-roblox-purple text-white text-xs font-bold hover:bg-purple-600 transition-all">Jugar de Nuevo</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="mb-4">
+                    <span class="text-xs text-roblox-purple font-bold">Pregunta ${quizIndex + 1} de ${QUIZ_QUESTIONS.length}</span>
+                    <h4 class="text-base font-bold text-white mt-1">${q.q}</h4>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    ${q.options.map((opt, i) => `
+                        <button onclick="answerQuiz(${i})" class="p-3 rounded-xl bg-roblox-base/80 border border-roblox-border text-xs font-semibold text-gray-200 hover:border-roblox-purple hover:bg-roblox-purple/20 transition-all text-left">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function answerQuiz(optionIndex) {
+            const q = QUIZ_QUESTIONS[quizIndex];
+            if (optionIndex === q.correct) {
+                quizScore++;
+                showToast('¡Correcto!', '¡Has sumado puntos en la trivia!');
+            } else {
+                showToast('Incorrecto', 'Esa no era la respuesta correcta.', 'red');
+            }
+
+            quizIndex++;
+            document.getElementById('quizScoreBadge').textContent = `Score: ${quizScore}/${QUIZ_QUESTIONS.length}`;
+            renderQuizQuestion();
+        }
+
+        function resetQuiz() {
+            quizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quizScoreBadge').textContent = `Score: 0/${QUIZ_QUESTIONS.length}`;
+            renderQuizQuestion();
+        }
+
+        function clickRobuxCounter() {
+            robuxBalance += 100;
+            document.getElementById('robuxCountDisplay').textContent = robuxBalance.toLocaleString();
+            showToast('¡Robux Bonus!', 'Has recolectado +100 Robux virtuales de bonificación.');
+        }
+
+        function copyCodeToClipboard(code) {
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast('¡Código Copiado!', `El código "${code}" ha sido copiado al portapapeles.`);
+        }
+
+        function showToast(title, message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function setupSearchListeners() {
+            const searchInput = document.getElementById('globalSearch');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filtered = GAMES_DATA.filter(g => g.title.toLowerCase().includes(query) || g.category.toLowerCase().includes(query));
+                
+                const grid = document.getElementById('gamesGrid');
+                if (filtered.length === 0) {
+                    grid.innerHTML = `<p class="col-span-full text-center py-10 text-gray-500 text-sm">No se encontraron juegos con "${query}"</p>`;
+                } else {
+                    renderGamesGridFiltered(filtered);
+                }
+            });
+
+            // Mobile menu toggle
+            document.getElementById('mobileMenuToggle').addEventListener('click', () => {
+                const menu = document.getElementById('mobileMenu');
+                menu.classList.toggle('hidden');
+            });
+        }
+
+        function renderGamesGridFiltered(filtered) {
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = '';
+            filtered.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'tilt-card glass-panel rounded-2xl overflow-hidden border border-roblox-border hover:border-roblox-blue transition-all cursor-pointer group flex flex-col justify-between';
+                card.onclick = () => openGameModal(game.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${game.image}" alt="${game.title}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-heading text-xl font-bold text-white">${game.title}</h3>
+                            <p class="text-xs text-gray-400 mt-2 line-clamp-2">${game.lore}</p>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
